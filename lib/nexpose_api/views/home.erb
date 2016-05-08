@@ -1,0 +1,227 @@
+<h1>Nexpose-api <span class="smallcaps">an API for Nexpose
+    </span></h1>
+
+<h2>系统信息</h2>
+
+<h3>获取系统信息</h3>
+
+<pre><code>GET /sys/info</code></pre>
+
+<h4>返回:</h4>
+
+<pre><code>{
+    "cpu-count":"2",
+    "cpu-speed":"2600",
+    "disk-install":"C:\\\\Program Files\\\\rapid7\\\\nexpose=42661008",
+    "disk-tmp":"..\\\\shared\\\\temp=42661008",
+    "os":"Microsoft Windows Server 2012 Server Standard Gold",
+    "ram-free":"1008868","ram-total":"8388084",
+    "up-time":"151321655",
+    "db-product":"postgresql",
+    "db-version":"PostgreSQL 9.4.1, compiled by Visual C++ build 1800, 64-bit",
+    "java-name":"Java HotSpot(TM) 64-Bit Server VM",
+    "java-heap-max":"6421479424",
+    "java-heap-committed":"6421479424",
+    "java-heap-free":"3921703120",
+    "java-heap-used":"2499776304",
+    "jre-version":"25.40-b25",
+    "nsc-name":"CN=NeXpose Security Console, O=Capital cloud",
+    "nsc-version":"6.1.15",
+    "last-update-date":"1458065498338",
+    "last-update-id":"4027181544",
+    "java-daemon-thread-count":"50",
+    "java-total-thread-count":"89",
+    "java-thread-peak-count":"95",
+    "java-started-thread-count":"14190"
+}</code></pre>
+
+<hr>
+<h2>站点</h2>
+
+
+
+<h3>获取站点信息</h3>
+
+<pre><code>GET /site/:site_id</code></pre>
+
+<h4>参数</h4>
+    site_id ## 站点ID
+
+<h4>返回</h4>
+
+<pre><code>{
+    "id":11,
+    "name":"\xe6\x98\x93\xe7\xba\xa6\xe7\xa7\x91\xe6\x8a\x80",
+    "description":"",
+    "auto_engine_selection_enabled":false,
+    "included_scan_targets":{
+        "addresses":["101.251.249.180 - 101.251.249.181"],
+        "asset_groups":[]
+    },
+    "excluded_scan_targets":{"addresses":[],"asset_groups":[]},
+    "engine_id":3,
+    "scan_template_id":"full-audit-without-web-spider",
+    "risk_factor":1.0,
+    "schedules":[],
+    "shared_credentials":[],
+    "site_credentials":[],
+    "web_credentials":[],
+    "discovery_config":{},
+    "search_criteria":{},
+    "tags":[],
+    "alerts":[],
+    "organization":{
+        "name":null,
+        "url":null,
+        "primary_contact":null,
+        "job_title":null,
+        "email":null,
+        "telephone":null,
+        "address":null,
+        "state":null,
+        "city":null,
+        "zip":null,
+        "country":null
+    },
+    "users":[]
+}</code></pre>
+
+
+<hr>
+
+<h3>创建站点</h3>
+
+<pre><code>POST /site</code></pre>
+<h4>参数</h4>
+<pre><code>{
+    'include_addresses': 'baidu.com;', ##支持多个url或者IP地址，用";"隔开。
+    'include_asset_groups': '', ##支持多个group，用";"隔开。
+    'name': 'mytest' ## 站点名称
+}</code></pre>
+
+<h4>返回</h4>
+
+<pre><code>
+{u'code': 200, u'ok': true, u'site_id': 24} ##成功
+{u'code': 200, u'ok': false} ##失败
+</code></pre>
+
+<hr>
+
+<h3>删除站点</h3>
+
+<pre><code>DELETE /site/:site_id</code></pre>
+<h4>参数</h4>
+    site_id ## 站点ID
+
+<h4>返回</h4>
+
+<pre><code>
+{'code': 200,'ok': 'true'} ##成功
+{'code': 200,'ok': 'false'} ##失败
+</code></pre>
+
+<hr>
+<h3>扫描站点</h3>
+
+<pre><code>GET /scan/:site_id</code></pre>
+<h4>参数</h4>
+site_id ## 站点ID
+
+<h4>返回</h4>
+
+<pre><code>
+  {"code":200,"ok":true,"scan_id":37} ##成功
+  {"code":200,"ok":false,"scan_id":37} ##失败
+</code></pre>
+
+<hr>
+
+<h3>查看正在进行的扫描</h3>
+
+<pre><code>GET /scan/activity</code></pre>
+
+<h4>返回</h4>
+
+<pre><code>
+  [
+    {
+        "site_id":16,
+        "engine_id":3,
+        "scan_id":37,
+        "status":"running",
+        "start_time":"2016-03-24 09:25:23 +0800",
+        "end_time":null
+    }
+  ]
+</code></pre>
+<hr>
+<h3>查看已完成的扫描</h3>
+
+<pre><code>GET /scan/completed/:site_id</code></pre>
+
+<h4>返回</h4>
+
+<pre><code>
+  [
+    {
+        "id":36,
+        "site_id":16,
+        "status":"completed",
+        "start_time":"2016-03-23 20:08:04 +0800",
+        "end_time":"2016-03-23 20:15:28 +0800",
+        "duration":444769,
+        "vulns":2,"assets":1,
+        "risk_score":733.96625,
+        "type":"manual",
+        "engine_name":"Local scan engine"
+    },
+    {
+        "id":35,
+        "site_id":16,
+        "status":"completed",
+        "start_time":"2016-03-23 19:19:41 +0800",
+        "end_time":"2016-03-23 19:24:47 +0800",
+        "duration":305332,
+        "vulns":6,"assets":1,
+        "risk_score":1849.2004,
+        "type":"manual",
+        "engine_name":"Local scan engine"
+    }
+  ]
+</code></pre>
+
+<hr>
+<h3>创建silo profile</h3>
+
+<pre><code>POST /silo/profile</code></pre>
+
+<h4>参数</h4>
+<pre><code>
+  {"id": "my-test-id", "name": "test-name"}
+</code></pre>
+
+<h4>返回</h4>
+
+<pre><code>
+  {code: 200, message: '', ok: true, silo_profile_id: my-test-id} ##成功
+  {code: 500, message: 'create error', ok: false} ##失败
+</code></pre>
+
+
+<hr>
+<h3>创建silo</h3>
+
+<pre><code>POST /silo/silo</code></pre>
+
+<h4>参数</h4>
+<pre><code>
+  {"id": "silo-test-id", "name": "test-silo", "profile_id": "my-test-id"}
+</code></pre>
+
+<h4>返回</h4>
+
+<pre><code>
+  {code: 200, message: '', ok: true, silo_id: silo-test-id} ##成功
+  {code: 500, message: 'create error', ok: false} ##失败
+</code></pre>
